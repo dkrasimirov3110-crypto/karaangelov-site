@@ -598,7 +598,7 @@ const ASSEMBLE = 2200;
 function finishAssembly() {
   allBlocks.forEach(b => { b.position.y = b.userData.finalY; b.visible = true; });
   introDone = true;
-  intro.querySelector('.msg').textContent = 'Остана едно блокче. Твое е.';
+  intro.querySelector('.msg').textContent = 'Остана едно блокче. То е ваше.';
   intro.querySelector('.cta').style.display = 'block';
 }
 function placeKeystone() {
@@ -610,7 +610,7 @@ function placeKeystone() {
   controls.enabled = true;
   Object.values(labels).forEach(l => l.classList.add('on'));
   setTimeout(() => Object.values(labels).forEach(l => l.classList.remove('on')), 3500);
-  setTimeout(() => toast(mobile ? 'Докосни сграда, за да я отвориш.' : 'Кликни сграда, за да я отвориш. Влачи, за да въртиш града.'), 900);
+  setTimeout(() => toast(mobile ? 'Докоснете сграда, за да я отворите.' : 'Кликнете върху сграда, за да я отворите. Плъзнете, за да завъртите града.'), 900);
 }
 document.getElementById('placeBtn').onclick = () => { soundOn || (soundOn = false); placeKeystone(); };
 document.getElementById('skipBtn').onclick = () => { finishAssembly(); placeKeystone(); };
@@ -664,7 +664,7 @@ const seen = new Set();
 const total = ORDER.length - 1;
 function updateCounter() {
   document.getElementById('counter').textContent = `Разгледани: ${Math.min(seen.size, total)}/${total}`;
-  if (seen.size === total) toast('Видя целия град. Сега е твой ред: пиши ми.');
+  if (seen.size === total) toast('Разгледахте целия град. Ако искате да работим заедно, пишете ми.');
 }
 let focusTarget = null;
 function openProject(id) {
@@ -717,19 +717,19 @@ document.getElementById('homeBtn').onclick = () => { closePanel(); camera.positi
 
 function contactHTML() {
   return `
-<p>Имаш идея, проект или просто въпрос? Пиши ми.</p>
+<p>Имате идея, проект или въпрос? Ще се радвам да ми пишете.</p>
 <div class="contact-row">
   <a class="btn pink" href="mailto:${SITE.email}">Имейл</a>
   <button class="btn" id="copyMail">Копирай имейла</button>
 </div>
 <p class="note">${SITE.email}</p>
 <form id="cform">
-  <input name="name" placeholder="Как се казваш?" required>
-  <select name="what" aria-label="За какво ти трябвам?">
-    <option>За какво ти трябвам?</option>
+  <input name="name" placeholder="Вашето име" required>
+  <select name="what" aria-label="Тема на запитването">
+    <option>С какво мога да ви бъда полезен?</option>
     <option>Социални мрежи</option><option>ПР и събития</option><option>Дизайн и брандинг</option><option>Работа или стаж</option><option>Друго</option>
   </select>
-  <textarea name="msg" placeholder="Разкажи накратко" required></textarea>
+  <textarea name="msg" placeholder="Опишете накратко" required></textarea>
   <button class="btn" type="submit">Подготви имейла</button>
   <div class="status" id="cstatus" aria-live="polite"></div>
 </form>`;
@@ -744,7 +744,7 @@ function wireContact() {
     const subj = encodeURIComponent(`${f.get('what')} – ${f.get('name')}`);
     const body = encodeURIComponent(f.get('msg'));
     location.href = `mailto:${SITE.email}?subject=${subj}&body=${body}`;
-    document.getElementById('cstatus').textContent = `Щрак. Ако имейлът ти не се отвори, пиши ми на ${SITE.email}.`;
+    document.getElementById('cstatus').textContent = `Ако имейл програмата ви не се отвори, пишете ми на ${SITE.email}.`;
   };
 }
 
@@ -767,7 +767,7 @@ function toast(t) {
   clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), 3200);
 }
 const baseTitle = document.title;
-document.addEventListener('visibilitychange', () => { document.title = document.hidden ? 'Забрави си блокче' : baseTitle; });
+document.addEventListener('visibilitychange', () => { document.title = document.hidden ? 'Забравихте едно блокче' : baseTitle; });
 addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
