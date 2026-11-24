@@ -127,6 +127,22 @@ body.night .mode{background:rgba(30,34,56,.75)}
 body.agent header{z-index:50}
 body.agent .logo{color:#EDEAF2}
 @media (max-width:640px){.mode button{padding:6px 9px}}
+#game{position:fixed;inset:0;z-index:70;display:none;background:#DCE9EE}
+#game.open{display:block}
+#game canvas{width:100%;height:100%;display:block;touch-action:none}
+.g-hud{position:absolute;top:18px;left:24px;display:flex;gap:14px;align-items:baseline;font:800 30px Manrope,sans-serif;color:var(--graphite)}
+.g-best{font:600 13px Manrope,sans-serif;color:var(--concrete)}
+.g-x{position:absolute;top:14px;right:18px;width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.8);font:400 26px Manrope,sans-serif;cursor:pointer;color:var(--graphite)}
+.g-card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(420px,calc(100% - 40px));background:var(--stone);border-radius:20px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.18);text-align:center}
+.g-card h2{font:800 30px Manrope,sans-serif;margin:4px 0 10px}
+.g-card p{margin:0 0 12px;line-height:1.5}
+.g-kicker{font:700 11px Manrope,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--pink)}
+.g-keys{list-style:none;padding:0;margin:0 0 18px;font-size:14px;text-align:left}
+.g-keys li{margin:6px 0}
+.g-card .btn{margin:4px}
+.g-flash{position:absolute;left:50%;top:22%;transform:translateX(-50%);font:800 26px Manrope,sans-serif;color:var(--pink);opacity:0;pointer-events:none;text-shadow:0 2px 0 #fff}
+.g-flash.on{animation:gf .9s ease-out}
+@keyframes gf{0%{opacity:0;transform:translate(-50%,10px)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-20px)}}
 #flat{position:fixed;inset:0;z-index:40;background:var(--stone);color:var(--graphite);overflow-y:auto;display:none}
 #flat.open{display:block}
 #flat .wrap{max-width:860px;margin:0 auto;padding:90px 24px 60px}

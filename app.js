@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { SITE, PROJECTS, ORDER } from './data.js';
+import { makeKayak, stroke } from './kayak.js';
 
 const C = {
   stone: 0xF4F1EA, plaster: 0xE7E2D8, graphite: 0x1F2023, graphite2: 0x3A3B3F, concrete: 0x9C9A94,
@@ -446,13 +447,10 @@ function figure(x, z, color) {
 }
 [[12.6, 3.9, C.cobalt], [13.3, 4.0, C.pink], [14.4, 3.8, C.lime], [3.1, -6, C.graphite], [-3.1, 0.6, C.violet], [6.4, -1.6, 0xF2A33C]].forEach(([x, z, c]) => figure(x, z, c));
 // каяк по реката
-const kayak = new THREE.Group();
-kayak.add(new THREE.Mesh(new RoundedBoxGeometry(0.6, 0.3, 2.2, 3, 0.14), mat(0xF2A33C)));
-const rower = new THREE.Mesh(new RoundedBoxGeometry(0.3, 0.45, 0.3, 2, 0.06), mat(C.graphite));
-rower.position.y = 0.35; kayak.add(rower);
-const rh = new THREE.Mesh(headGeo, mat(0xF0D2B6)); rh.position.y = 0.72; kayak.add(rh);
-const paddle = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.05, 0.12), mat(C.graphite)); paddle.position.y = 0.45; kayak.add(paddle);
-kayak.children.forEach(m => (m.castShadow = true));
+const KY = makeKayak();
+const kayak = KY.group;
+kayak.scale.setScalar(0.8);
+kayak.traverse(m => { if (m.isMesh) m.castShadow = true; });
 kayak.position.set(0.8, -0.18, 4);
 kayak.userData.id = 'kayak';
 world.add(kayak);
@@ -610,7 +608,7 @@ function placeKeystone() {
   controls.enabled = true;
   Object.values(labels).forEach(l => l.classList.add('on'));
   setTimeout(() => Object.values(labels).forEach(l => l.classList.remove('on')), 3500);
-  setTimeout(() => toast(mobile ? 'Докоснете сграда, за да я отворите.' : 'Кликнете върху сграда, за да я отворите. Плъзнете, за да завъртите града.'), 900);
+  setTimeout(() => toast(mobile ? 'Докоснете сграда, за да я отворите. Каякът по реката е мини игра.' : 'Кликнете върху сграда, за да я отворите. Плъзнете, за да завъртите града. Каякът по реката е мини игра.'), 900);
 }
 document.getElementById('placeBtn').onclick = () => { soundOn || (soundOn = false); placeKeystone(); };
 document.getElementById('skipBtn').onclick = () => { finishAssembly(); placeKeystone(); };
@@ -653,7 +651,7 @@ canvas.addEventListener('pointerup', ev => {
   if (!keyPlaced) { if (introDone) placeKeystone(); return; }
   const o = pick(ev);
   if (!o) return;
-  if (o.userData.id === 'kayak') { kayakBoost = 1; click(0.7); toast('Гребане, кану-каяк, плуване. Морето е винаги тук.'); return; }
+  if (o.userData.id === 'kayak') { click(0.7); startKayakGame(); return; }
   openProject(o.userData.id);
 });
 
@@ -816,9 +814,9 @@ function frame(now) {
   kayak.position.z = -3.2 + Math.sin(kp) * 8;
   kayak.position.x = 0.4 + Math.sin(kp * 0.5) * 0.35;
   sail.position.y = -0.15 + Math.sin(t * 1.3) * 0.05; sail.rotation.z = Math.sin(t * 1.1) * 0.04; sail.position.x = 7.5 + Math.sin(t * 0.07) * 4;
-  kayak.rotation.y = Math.cos(kp) > 0 ? 0 : Math.PI;
-  paddle.rotation.x = Math.sin(t * 4) * 0.5;
-  kayak.position.y = -0.18 + Math.sin(t * 2) * 0.04;
+  kayak.rotation.y = Math.cos(kp) > 0 ? Math.PI : 0;
+  stroke(KY, t, 4);
+  kayak.position.y = -0.12 + Math.sin(t * 2) * 0.03;
   // камера към фокус
   if (focusTarget) {
     controls.target.lerp(focusTarget, 0.06);
@@ -826,10 +824,18 @@ function frame(now) {
   }
   controls.update();
   if (keyPlaced) placeLabels();
-  renderer.render(scene, camera);
+  if (!cityPaused) renderer.render(scene, camera);
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
+
+/* ---------- Мини игра с каяка ---------- */
+let cityPaused = false;
+function startKayakGame() {
+  cityPaused = true;
+  import('./game.js').then(m => m.openGame(() => { cityPaused = false; }))
+    .catch(() => { cityPaused = false; toast('Играта не успя да се зареди.'); });
+}
 
 /* ---------- Изглед „Човек / AI“ ---------- */
 {
