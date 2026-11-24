@@ -490,7 +490,9 @@ world.add(kayak);
   });
   for (const [x, z] of [[-10, 10.6], [-4, 11.2], [4, 11.2], [10, 10.6], [15, 10.3]]) { part(t, x, -0.4, z, 0.28, 0.4, 0.28, 0xF2A33C); part(t, x, 0, z, 0.18, 0.08, 0.18, 0xffffff); }
 }
+const TOYS = new Set(['kayak', 'sail']);
 const sail = new THREE.Group();
+sail.userData.id = 'sail';
 {
   const add = (w, h, dd, c, x, y, z) => { const m = new THREE.Mesh(boxGeo(w, h, dd), mat(c)); m.position.set(x, y, z); m.castShadow = true; sail.add(m); };
   add(2.0, 0.3, 0.7, 0xffffff, 0, 0, 0); add(1.6, 0.06, 0.55, 0xA8784E, 0, 0.17, 0);
@@ -608,7 +610,7 @@ function placeKeystone() {
   controls.enabled = true;
   Object.values(labels).forEach(l => l.classList.add('on'));
   setTimeout(() => Object.values(labels).forEach(l => l.classList.remove('on')), 3500);
-  setTimeout(() => toast(mobile ? 'Докоснете сграда, за да я отворите. Каякът по реката е мини игра.' : 'Кликнете върху сграда, за да я отворите. Плъзнете, за да завъртите града. Каякът по реката е мини игра.'), 900);
+  setTimeout(() => toast(mobile ? 'Докоснете сграда, за да я отворите. Каякът и платноходката са мини игри.' : 'Кликнете върху сграда, за да я отворите. Плъзнете, за да завъртите града. Каякът и платноходката са мини игри.'), 900);
 }
 document.getElementById('placeBtn').onclick = () => { soundOn || (soundOn = false); placeKeystone(); };
 document.getElementById('skipBtn').onclick = () => { finishAssembly(); placeKeystone(); };
@@ -623,7 +625,7 @@ function pick(ev) {
   ptr.x = ((ev.clientX - r.left) / r.width) * 2 - 1;
   ptr.y = -((ev.clientY - r.top) / r.height) * 2 + 1;
   ray.setFromCamera(ptr, camera);
-  const hits = ray.intersectObjects([...Object.values(buildings), kayak], true);
+  const hits = ray.intersectObjects([...Object.values(buildings), kayak, sail], true);
   for (const h of hits) {
     let o = h.object;
     while (o && !o.userData.id) o = o.parent;
@@ -635,9 +637,9 @@ canvas.addEventListener('pointermove', ev => {
   if (!keyPlaced) return;
   const o = pick(ev);
   if (o !== hovered) {
-    if (hovered && hovered.userData.id !== 'kayak') labels[hovered.userData.id].classList.remove('hot', 'on');
+    if (hovered && !TOYS.has(hovered.userData.id)) labels[hovered.userData.id].classList.remove('hot', 'on');
     hovered = o;
-    if (o && o.userData.id !== 'kayak') { labels[o.userData.id].classList.add('hot', 'on'); click(1.6); }
+    if (o && !TOYS.has(o.userData.id)) { labels[o.userData.id].classList.add('hot', 'on'); click(1.6); }
     canvas.style.cursor = o ? 'pointer' : 'grab';
   }
 });
@@ -651,7 +653,8 @@ canvas.addEventListener('pointerup', ev => {
   if (!keyPlaced) { if (introDone) placeKeystone(); return; }
   const o = pick(ev);
   if (!o) return;
-  if (o.userData.id === 'kayak') { click(0.7); startKayakGame(); return; }
+  if (o.userData.id === 'kayak') { click(0.7); startGame('./game.js', 'openGame'); return; }
+  if (o.userData.id === 'sail') { click(0.7); startGame('./gulls.js', 'openGulls'); return; }
   openProject(o.userData.id);
 });
 
@@ -831,9 +834,9 @@ requestAnimationFrame(frame);
 
 /* ---------- Мини игра с каяка ---------- */
 let cityPaused = false;
-function startKayakGame() {
+function startGame(file, fn) {
   cityPaused = true;
-  import('./game.js').then(m => m.openGame(() => { cityPaused = false; }))
+  import(file).then(m => m[fn](() => { cityPaused = false; }))
     .catch(() => { cityPaused = false; toast('Играта не успя да се зареди.'); });
 }
 
