@@ -14,6 +14,7 @@
 <meta property="og:locale" content="bg_BG">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Дамян Караангелов", "url": "https://karaangelov-site.pages.dev/", "image": "https://karaangelov-site.pages.dev/assets/portret.jpg", "email": "mailto:d.krasimirov3110@gmail.com", "jobTitle": "Брандинг, дизайн и съдържание", "description": "Студент по маркетинг във Варна. Брандинг, дизайн, съдържание, социални мрежи и ПР за малкия бизнес.", "address": {"@type": "PostalAddress", "addressLocality": "Варна", "addressCountry": "BG"}, "alumniOf": {"@type": "HighSchool", "name": "ВТГ „Г. С. Раковски“"}, "affiliation": {"@type": "CollegeOrUniversity", "name": "Икономически университет – Варна", "url": "https://www.ue-varna.bg"}, "knowsAbout": ["Брандинг", "Графичен дизайн", "Социални мрежи", "Връзки с обществеността", "Маркетинг"], "makesOffer": {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Социални мрежи и ПР за малкия бизнес", "areaServed": "Варна"}}}</script>
+<link rel="alternate" type="text/markdown" href="ai.md" title="Текстова версия за AI">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <meta name="description" content="Брандинг, дизайн и съдържание от Варна. Портфолио на Дамян Караангелов – проекти за Двореца на културата и спорта, Студентския съвет на ИУ-Варна и услуги за малкия бизнес.">
 <script type="importmap">
@@ -114,6 +115,18 @@ body.night #counter{background:var(--pink);color:var(--graphite)}
 #panel .status{font-weight:700;color:var(--pink);min-height:1.2em}
 
 /* Само съдържание */
+.mode{display:flex;background:rgba(255,255,255,.65);backdrop-filter:blur(8px);border-radius:999px;padding:3px;gap:2px}
+.mode button{font:700 11px Manrope,sans-serif;letter-spacing:.08em;text-transform:uppercase;border:0;background:none;padding:7px 11px;border-radius:999px;cursor:pointer;color:var(--concrete)}
+.mode button[aria-pressed="true"]{background:var(--graphite);color:var(--stone)}
+body.night .mode{background:rgba(30,34,56,.75)}
+#agent{position:fixed;inset:0;z-index:45;background:#111214;color:#D9F2C4;overflow-y:auto;display:none;padding:96px 28px 60px}
+#agent.open{display:block}
+#agent pre{max-width:820px;margin:0 auto;white-space:pre-wrap;word-wrap:break-word;font:14px/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+#agent .bar{max-width:820px;margin:0 auto 18px;display:flex;gap:10px;flex-wrap:wrap;font:600 12px Manrope,sans-serif;color:#8A8F98}
+#agent .bar a{color:#EE6FA8}
+body.agent header{z-index:50}
+body.agent .logo{color:#EDEAF2}
+@media (max-width:640px){.mode button{padding:6px 9px}}
 #flat{position:fixed;inset:0;z-index:40;background:var(--stone);color:var(--graphite);overflow-y:auto;display:none}
 #flat.open{display:block}
 #flat .wrap{max-width:860px;margin:0 auto;padding:90px 24px 60px}
@@ -146,7 +159,7 @@ body.night #counter{background:var(--pink);color:var(--graphite)}
 <main id="static" class="sr">
 <h1>Дамян Караангелов – брандинг, дизайн и съдържание, Варна</h1>
 <p>Брандинг, дизайн и съдържание от Варна. Свързвам добрите идеи с хората, които могат да ги осъществят.</p>
-<p>Студент по маркетинг в Икономически университет – Варна. Предлагам услуги в социалните мрежи и ПР за малкия бизнес. Контакт: <a href="mailto:d.krasimirov3110@gmail.com">d.krasimirov3110@gmail.com</a>.</p>
+<p>Студент по маркетинг в Икономически университет – Варна. Предлагам услуги в социалните мрежи и ПР за малкия бизнес. Контакт: <a href="mailto:d.krasimirov3110@gmail.com">d.krasimirov3110@gmail.com</a>. Текстова версия за AI: <a href="ai.md">ai.md</a>.</p>
 <section id="p-zamen">
 <h2>За мен</h2>
 <p>Дамян Караангелов · Варна</p>
@@ -237,6 +250,7 @@ body.night #counter{background:var(--pink);color:var(--graphite)}
     <img src="assets/logo.png" alt="" width="34" height="34">
     <span>Дамян Караангелов</span>
   </button>
+  <div class="mode" role="group" aria-label="Изглед"><button id="mHuman" aria-pressed="true">Човек</button><button id="mAgent" aria-pressed="false">AI</button></div>
   <nav aria-label="Основно меню">
     <button data-open="zamen">За мен</button>
     <button data-open="dvorec">ДКС</button>
@@ -269,6 +283,7 @@ body.night #counter{background:var(--pink);color:var(--graphite)}
 
 <section id="flat" aria-label="Цялото съдържание"><div class="wrap" id="flatInner"></div></section>
 <div id="toast"></div>
+<section id="agent" aria-label="Текстов изглед за AI"><div class="bar"><span>Изглед за AI агенти · същото съдържание като текст</span><a href="ai.md">ai.md</a><a href="llms.txt">llms.txt</a></div><pre id="agentText">Зареждане…</pre></section>
 <div id="lightbox"><img alt=""></div>
 
 <noscript><div style="padding:40px;font-size:18px">Дамян Караангелов – дизайн, брандинг и съдържание от Варна.</div></noscript>

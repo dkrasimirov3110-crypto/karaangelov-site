@@ -830,3 +830,19 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
+
+/* ---------- Изглед „Човек / AI“ ---------- */
+{
+  const ag = document.getElementById('agent'), h = document.getElementById('mHuman'), m = document.getElementById('mAgent');
+  let loaded = false;
+  const set = on => {
+    ag.classList.toggle('open', on); document.body.classList.toggle('agent', on);
+    h.setAttribute('aria-pressed', String(!on)); m.setAttribute('aria-pressed', String(on));
+    if (on && !loaded) fetch('ai.md').then(r => r.text()).then(t => { document.getElementById('agentText').textContent = t; loaded = true; })
+      .catch(() => { document.getElementById('agentText').textContent = 'Текстовата версия е на адрес /ai.md'; });
+    if (on) history.replaceState(null, '', '#ai'); else if (location.hash === '#ai') history.replaceState(null, '', location.pathname);
+  };
+  h.onclick = () => set(false); m.onclick = () => set(true);
+  document.querySelectorAll('nav button, #homeBtn').forEach(b => b.addEventListener('click', () => set(false)));
+  if (location.hash === '#ai') set(true);
+}
